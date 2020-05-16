@@ -1,0 +1,163 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: "http://localhost:8080"
+  description: Cart Microservice for Book Application
+paths:
+  /api/v1/cart/{userId}/{itemId}:
+    get:
+      tags:
+      - cart-controller
+      operationId: getItem
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: itemId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Item"
+  /api/v1/cart/{userId}:
+    get:
+      tags:
+      - cart-controller
+      operationId: getCart
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Cart"
+    post:
+      tags:
+      - cart-controller
+      operationId: commitCart
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Cart"
+    delete:
+      tags:
+      - cart-controller
+      operationId: deleteCart
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Cart"
+  /api/v1/cart/{userId}/item:
+    post:
+      tags:
+      - cart-controller
+      operationId: addItem
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Item"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Item"
+    delete:
+      tags:
+      - cart-controller
+      operationId: deleteItem
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Item"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Item"
+components:
+  schemas:
+    Item:
+      type: object
+      properties:
+        itemId:
+          minimum: 1
+          type: integer
+          format: int64
+        number:
+          minimum: 0
+          type: integer
+          format: int32
+    Cart:
+      required:
+      - items
+      type: object
+      properties:
+        userId:
+          minimum: 1
+          type: integer
+          format: int64
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Item"
