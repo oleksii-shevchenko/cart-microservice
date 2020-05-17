@@ -1,4 +1,4 @@
-package dev.flanker.cart.db.bt;
+package dev.flanker.cart.db.gcp;
 
 import dev.flanker.cart.db.CartRepository;
 import dev.flanker.cart.rest.domain.Item;

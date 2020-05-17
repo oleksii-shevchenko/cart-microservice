@@ -1,4 +1,4 @@
-@namespace("dev.flanker.cart.avro")
+@namespace("dev.flanker.cart.generated.avro")
 protocol Messaging {
   record OrderEntry {
     long itemId;
@@ -8,6 +8,6 @@ protocol Messaging {
   record Order {
     long userId;
     long cartId;
-    array<OrderEntry> items;
+    array<OrderEntry> entries;
   }
 }

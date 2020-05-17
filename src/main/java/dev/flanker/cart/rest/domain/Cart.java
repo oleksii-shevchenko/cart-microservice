@@ -12,7 +12,7 @@ public class Cart {
     @NotNull
     private List<Item> items;
 
-    public Cart(long userId, List<Item> items) {
+    public Cart(@Min(1) long userId, @NotNull List<Item> items) {
         this.userId = userId;
         this.items = items;
     }

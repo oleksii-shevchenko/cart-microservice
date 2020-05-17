@@ -23,7 +23,11 @@ repositories {
 dependencies {
     implementation 'org.springdoc:springdoc-openapi-ui:1.3.9'
     implementation 'org.springdoc:springdoc-openapi-webmvc-core:1.3.9'
+
     implementation 'org.apache.avro:avro:1.9.2'
+    implementation 'com.google.cloud:google-cloud-pubsub:1.105.1'
+    implementation 'com.spotify:futures-extra:4.2.0'
+
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -47,7 +51,7 @@ avro {
 }
 
 task cleanAvro {
-    delete("./src/main/java/dev/flanker/cart/avro")
+    delete("./src/main/java/dev/flanker/cart/generated/avro")
     delete("./build/generated-avro-main-avpr")
     delete("./build/generated-main-avro-avsc")
 }

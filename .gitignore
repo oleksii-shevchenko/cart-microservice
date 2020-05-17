@@ -48,3 +48,7 @@ out/
 *.zip
 *.tar.gz
 *.rar
+
+
+### Generated Classes ###
+src/main/java/dev/flanker/cart/generated

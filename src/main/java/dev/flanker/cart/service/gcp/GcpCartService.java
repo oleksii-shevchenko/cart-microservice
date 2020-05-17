@@ -21,14 +21,9 @@ public class GcpCartService implements CartService {
 
     private final BindingRepository bindingRepository;
 
-    private final Supplier<Long> cartIdGenerator;
-
-    public GcpCartService(CartRepository cartRepository,
-                          BindingRepository bindingRepository,
-                          Supplier<Long> cartIdGenerator) {
+    public GcpCartService(CartRepository cartRepository, BindingRepository bindingRepository) {
         this.cartRepository = cartRepository;
         this.bindingRepository = bindingRepository;
-        this.cartIdGenerator = cartIdGenerator;
     }
 
     @Override

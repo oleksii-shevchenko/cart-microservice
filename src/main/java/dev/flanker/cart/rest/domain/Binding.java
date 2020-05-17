@@ -10,7 +10,7 @@ public class Binding {
     @Min(1)
     private long cartId;
 
-    public Binding(long userId, long cartId) {
+    public Binding(@Min(1) long userId, @Min(1) long cartId) {
         this.userId = userId;
         this.cartId = cartId;
     }

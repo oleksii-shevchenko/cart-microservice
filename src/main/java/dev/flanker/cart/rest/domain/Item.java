@@ -7,10 +7,10 @@ public class Item {
     @Min(1)
     private long itemId;
 
-    @Min(0)
-    private int number;
+    @Min(1)
+    private Integer number;
 
-    public Item(long itemId, int number) {
+    public Item(@Min(1) long itemId, @Min(1) Integer number) {
         this.itemId = itemId;
         this.number = number;
     }
@@ -23,12 +23,16 @@ public class Item {
         this.itemId = itemId;
     }
 
-    public int getNumber() {
+    public Integer getNumber() {
         return number;
     }
 
-    public void setNumber(int number) {
+    public void setNumber(Integer number) {
         this.number = number;
+    }
+
+    public boolean isNumberPresent() {
+        return number != null;
     }
 
     @Override
@@ -37,7 +41,7 @@ public class Item {
         if (o == null || getClass() != o.getClass()) return false;
         Item item = (Item) o;
         return itemId == item.itemId &&
-                number == item.number;
+                Objects.equals(number, item.number);
     }
 
     @Override
