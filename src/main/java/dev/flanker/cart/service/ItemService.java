@@ -2,10 +2,12 @@ package dev.flanker.cart.service;
 
 import dev.flanker.cart.rest.domain.Item;
 
+import java.util.concurrent.CompletionStage;
+
 public interface ItemService {
-    void increase(long userId, Item item);
+    CompletionStage<Item> increase(long userId, Item item);
 
-    void decrease(long userId, Item item);
+    CompletionStage<Item> decrease(long userId, Item item);
 
-    Item get(long userId);
+    CompletionStage<Item> get(long userId, long itemId);
 }
