@@ -2,6 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.3.0.RELEASE'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'java'
+    id 'org.betterplugin.avro' version '0.19.2-SNAPSHOT'
 }
 
 group = 'dev.flanker'
@@ -16,11 +17,13 @@ configurations {
 
 repositories {
     mavenCentral()
+    gradlePluginPortal()
 }
 
 dependencies {
     implementation 'org.springdoc:springdoc-openapi-ui:1.3.9'
     implementation 'org.springdoc:springdoc-openapi-webmvc-core:1.3.9'
+    implementation 'org.apache.avro:avro:1.9.2'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -34,4 +37,41 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+avro {
+    fieldVisibility = "PRIVATE"
+    outputCharacterEncoding = "UTF-8"
+    stringType = "String"
+    dateTimeLogicalType = "JSR310"
+}
+
+task cleanAvro {
+    delete("./src/main/java/dev/flanker/cart/avro")
+    delete("./build/generated-avro-main-avpr")
+    delete("./build/generated-main-avro-avsc")
+}
+
+def generateProtocol = tasks.register("generateProtocol", org.betterplugin.avro.GenerateAvroProtocolTask) {
+    dependsOn cleanAvro
+    source file("./src/main/resources/avro")
+    include("**/*.avdl")
+    outputDir = file("./build/generated-avro-main-avpr")
+}
+
+def generateSchema = tasks.register("generateSchema", org.betterplugin.avro.GenerateAvroSchemaTask) {
+    dependsOn generateProtocol
+    source file("./build/generated-avro-main-avpr")
+    include("**/*.avpr")
+    outputDir = file("./build/generated-main-avro-avsc")
+}
+
+def generateAvro = tasks.register("generateAvro", org.betterplugin.avro.GenerateAvroJavaTask) {
+    dependsOn generateSchema
+    source("./build/generated-main-avro-avsc")
+    outputDir = file("./src/main/java/")
+}
+
+tasks.named("compileJava").configure {
+    source(generateAvro)
 }
