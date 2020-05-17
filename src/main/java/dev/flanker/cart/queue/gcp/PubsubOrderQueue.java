@@ -33,7 +33,7 @@ public class PubsubOrderQueue implements OrderQueue {
             ApiFuture<String> futureId = publisher.publish(createMessage(cartId, cart));
             return ApiFuturesExtra.toCompletableFuture(futureId, ForkJoinPool.commonPool());
         } catch (Exception e) {
-            LOGGER.info("Failed to send order [cartId={}, userId={}]", cartId, cart.getUserId());
+            LOGGER.error("Failed to send order [cartId={}, userId={}]", cartId, cart.getUserId());
             return CompletableFuture.failedFuture(e);
         }
     }

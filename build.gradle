@@ -17,6 +17,7 @@ configurations {
 
 repositories {
     mavenCentral()
+    jcenter()
     gradlePluginPortal()
 }
 
@@ -27,6 +28,8 @@ dependencies {
     implementation 'org.apache.avro:avro:1.9.2'
     implementation 'com.google.cloud:google-cloud-pubsub:1.105.1'
     implementation 'com.spotify:futures-extra:4.2.0'
+
+    implementation 'com.datastax.oss:java-driver-core:4.6.1'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
@@ -50,20 +53,16 @@ avro {
     dateTimeLogicalType = "JSR310"
 }
 
-task cleanAvro {
-    delete("./src/main/java/dev/flanker/cart/generated/avro")
-    delete("./build/generated-avro-main-avpr")
-    delete("./build/generated-main-avro-avsc")
-}
 
 def generateProtocol = tasks.register("generateProtocol", org.betterplugin.avro.GenerateAvroProtocolTask) {
-    dependsOn cleanAvro
+    delete("./build/generated-avro-main-avpr")
     source file("./src/main/resources/avro")
     include("**/*.avdl")
     outputDir = file("./build/generated-avro-main-avpr")
 }
 
 def generateSchema = tasks.register("generateSchema", org.betterplugin.avro.GenerateAvroSchemaTask) {
+    delete("./build/generated-main-avro-avsc")
     dependsOn generateProtocol
     source file("./build/generated-avro-main-avpr")
     include("**/*.avpr")
@@ -71,6 +70,7 @@ def generateSchema = tasks.register("generateSchema", org.betterplugin.avro.Gene
 }
 
 def generateAvro = tasks.register("generateAvro", org.betterplugin.avro.GenerateAvroJavaTask) {
+    delete("./src/main/java/dev/flanker/cart/generated/avro")
     dependsOn generateSchema
     source("./build/generated-main-avro-avsc")
     outputDir = file("./src/main/java/")

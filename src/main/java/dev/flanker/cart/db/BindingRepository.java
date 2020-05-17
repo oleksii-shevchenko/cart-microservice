@@ -3,11 +3,12 @@ package dev.flanker.cart.db;
 import dev.flanker.cart.rest.domain.Binding;
 
 import java.util.Optional;
+import java.util.concurrent.CompletionStage;
 
 public interface BindingRepository {
-    void put(Binding binding);
+    CompletionStage<Void> put(Binding binding);
 
-    Optional<Binding> get(long userId);
+    CompletionStage<Binding> get(long userId);
 
-    Optional<Binding> delete(long userId);
+    CompletionStage<Void> delete(long userId);
 }

@@ -19,9 +19,7 @@ public class CartController {
 
     @ResponseBody
     @DeleteMapping("/api/v1/cart/{userId}")
-    public Cart deleteCart(@PathVariable long userId) {
-        return null;
-    }
+    public void deleteCart(@PathVariable long userId) { }
 
     @ResponseBody
     @GetMapping("/api/v1/cart/{userId}/{itemId}")

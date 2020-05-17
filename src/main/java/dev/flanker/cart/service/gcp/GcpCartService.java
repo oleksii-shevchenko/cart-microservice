@@ -15,7 +15,16 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 public class GcpCartService implements CartService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(GcpCartService.class);
+    @Override
+    public Cart get(long userId) {
+        return null;
+    }
+
+    @Override
+    public Cart delete(long userId) {
+        return null;
+    }
+    /*private static final Logger LOGGER = LoggerFactory.getLogger(GcpCartService.class);
 
     private final CartRepository cartRepository;
 
@@ -53,5 +62,5 @@ public class GcpCartService implements CartService {
             LOGGER.info("Missing binding for user [userId={}]. Return empty list", userId);
             return new Cart(userId, new ArrayList<>());
         }
-    }
+    }*/
 }

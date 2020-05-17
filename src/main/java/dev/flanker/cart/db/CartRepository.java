@@ -4,15 +4,18 @@ import dev.flanker.cart.rest.domain.Item;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletionStage;
 
 public interface CartRepository {
-    void put(long cartId, Item item);
+    CompletionStage<Void> put(long cartId, Item item);
 
-    List<Item> get(long cartId);
+    CompletionStage<Item> get(long cartId, long itemId);
 
-    Optional<Item> get(long cartId, long itemId);
+    CompletionStage<List<Item>> get(long cartId);
 
-    List<Item> delete(long cartId);
+    CompletionStage<Void> delete(long cartId);
 
-    Optional<Item> delete(long cartId, long itemId);
+    CompletionStage<Void> delete(long cartId, long itemId);
+
+    CompletionStage<Item> update(long cartId, long itemId, int numberDifference);
 }
