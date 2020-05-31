@@ -1,4 +1,4 @@
-package dev.flanker.cart.rest.domain;
+package dev.flanker.cart.domain;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -11,6 +11,8 @@ public class Cart {
 
     @NotNull
     private List<Item> items;
+
+    public Cart() {}
 
     public Cart(@Min(1) long userId, @NotNull List<Item> items) {
         this.userId = userId;

@@ -1,4 +1,4 @@
-package dev.flanker.cart.rest.domain;
+package dev.flanker.cart.domain;
 
 import javax.validation.constraints.Min;
 import java.util.Objects;
@@ -9,6 +9,8 @@ public class Binding {
 
     @Min(1)
     private long cartId;
+
+    public Binding() {}
 
     public Binding(@Min(1) long userId, @Min(1) long cartId) {
         this.userId = userId;

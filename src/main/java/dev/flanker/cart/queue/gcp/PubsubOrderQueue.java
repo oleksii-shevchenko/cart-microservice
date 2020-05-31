@@ -1,28 +1,29 @@
 package dev.flanker.cart.queue.gcp;
 
 import com.google.api.core.ApiFuture;
-import com.google.api.core.ApiFutures;
 import com.google.cloud.pubsub.v1.PublisherInterface;
 import com.google.protobuf.UnsafeByteOperations;
 import com.google.pubsub.v1.PubsubMessage;
 import com.spotify.futures.ApiFuturesExtra;
-import com.spotify.futures.FuturesExtra;
+import dev.flanker.cart.domain.Cart;
 import dev.flanker.cart.queue.OrderQueue;
-import dev.flanker.cart.rest.domain.Cart;
-import io.grpc.netty.shaded.io.netty.util.concurrent.CompleteFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ForkJoinPool;
 
+@Component
 public class PubsubOrderQueue implements OrderQueue {
     private static final Logger LOGGER = LoggerFactory.getLogger(PubsubOrderQueue.class);
 
     private final PublisherInterface publisher;
 
+    @Autowired
     public PubsubOrderQueue(PublisherInterface publisher) {
         this.publisher = publisher;
     }

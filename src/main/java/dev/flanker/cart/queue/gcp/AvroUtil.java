@@ -1,9 +1,9 @@
 package dev.flanker.cart.queue.gcp;
 
+import dev.flanker.cart.domain.Cart;
+import dev.flanker.cart.domain.Item;
 import dev.flanker.cart.generated.avro.Order;
 import dev.flanker.cart.generated.avro.OrderEntry;
-import dev.flanker.cart.rest.domain.Cart;
-import dev.flanker.cart.rest.domain.Item;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,7 +23,7 @@ final class AvroUtil {
     }
 
     static OrderEntry createEntry(Item item) {
-        if (!item.isNumberPresent() || item.getNumber() <= 0) {
+        if (item.getNumber() <= 0) {
             throw new IllegalArgumentException("Number of items must not be null and positive");
         }
         return OrderEntry.newBuilder()

@@ -1,8 +1,8 @@
 package dev.flanker.cart.queue.gcp;
 
 import com.google.cloud.pubsub.v1.PublisherInterface;
-import dev.flanker.cart.rest.domain.Cart;
-import dev.flanker.cart.rest.domain.Item;
+import dev.flanker.cart.domain.Cart;
+import dev.flanker.cart.domain.Item;
 import dev.flanker.cart.util.AsyncUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -37,15 +37,16 @@ class PubsubOrderQueueTest {
 
     @Test
     public void badRequestFailTest() {
-        assertTrue(isCompletedExceptionally(queue.send(12, new Cart(11, List.of(new Item(15, null))))));
-        assertTrue(isCompletedExceptionally(queue.send(12, new Cart(11, List.of(new Item(15, -1))))));
+        long id = 536546;
+        assertTrue(isCompletedExceptionally(queue.send(12, new Cart(id, List.of(new Item("15", -1))))));
     }
 
     @Test
     public void sendRequestFailTest() {
+        long userId = 4353453;
         String id = "TEST_ID";
         when(publisher.publish(any())).thenReturn(AsyncUtil.completedFuture(id));
-        CompletionStage<String> completedId = queue.send(12, new Cart(11, List.of(new Item(15, 1))));
+        CompletionStage<String> completedId = queue.send(12, new Cart(userId, List.of(new Item("15", 1))));
         assertEquals(id, completedId.toCompletableFuture().join());
         verify(publisher).publish(any());
     }

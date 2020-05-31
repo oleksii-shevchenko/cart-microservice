@@ -1,38 +1,35 @@
-package dev.flanker.cart.rest.domain;
+package dev.flanker.cart.domain;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.Objects;
 
 public class Item {
-    @Min(1)
-    private long itemId;
+    @NotNull
+    @Pattern(regexp = "^[0-9a-f]{1,24}$")
+    private String itemId;
 
     @Min(1)
-    private Integer number;
+    private int number;
 
-    public Item(@Min(1) long itemId, @Min(1) Integer number) {
+    public Item() {}
+
+    public Item(@NotNull @Pattern(regexp = "^[0-9a-f]{1,24}$") String itemId, @Min(1) int number) {
         this.itemId = itemId;
         this.number = number;
     }
 
-    public long getItemId() {
+    public String getItemId() {
         return itemId;
     }
 
-    public void setItemId(long itemId) {
+    public void setItemId(String itemId) {
         this.itemId = itemId;
     }
 
-    public Integer getNumber() {
+    public int getNumber() {
         return number;
-    }
-
-    public void setNumber(Integer number) {
-        this.number = number;
-    }
-
-    public boolean isNumberPresent() {
-        return number != null;
     }
 
     @Override
@@ -40,8 +37,8 @@ public class Item {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Item item = (Item) o;
-        return itemId == item.itemId &&
-                Objects.equals(number, item.number);
+        return number == item.number &&
+                itemId.equals(item.itemId);
     }
 
     @Override
@@ -49,10 +46,14 @@ public class Item {
         return Objects.hash(itemId, number);
     }
 
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
     @Override
     public String toString() {
         return "Item{" +
-                "itemId=" + itemId +
+                "itemId='" + itemId + '\'' +
                 ", number=" + number +
                 '}';
     }

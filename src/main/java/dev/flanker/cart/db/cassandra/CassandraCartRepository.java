@@ -6,15 +6,18 @@ import com.datastax.oss.driver.api.core.cql.BoundStatement;
 import com.datastax.oss.driver.api.core.cql.PreparedStatement;
 import com.datastax.oss.driver.api.core.cql.Row;
 import dev.flanker.cart.db.CartRepository;
-import dev.flanker.cart.rest.domain.Item;
+import dev.flanker.cart.domain.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
+@Repository
 public class CassandraCartRepository implements CartRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(CassandraCartRepository.class);
 
@@ -45,8 +48,9 @@ public class CassandraCartRepository implements CartRepository {
 
     private final CqlSession session;
 
-    private volatile int synchronize = 0;
+    private volatile int synchronise = 0;
 
+    @Autowired
     public CassandraCartRepository(CqlSession session) {
         this.session = session;
         this.putItemStatement = session.prepare(PUT_ITEM_CQL);
@@ -61,19 +65,19 @@ public class CassandraCartRepository implements CartRepository {
     public CompletionStage<Void> put(long cartId, Item item) {
         BoundStatement boundStatement = putItemStatement.boundStatementBuilder()
                 .setLong("cartId", cartId)
-                .setLong("itemId", item.getItemId())
-                .setLong("number", item.getNumber())
+                .setString("itemId", item.getItemId())
+                .setInt("number", item.getNumber())
                 .build();
-        LOGGER.info("Prepared item insert [cartId={}, itemId={}]", cartId, item.getItemId());
+        LOGGER.info("Prepared item insert [cartId={}, itemId={}].", cartId, item.getItemId());
         return session.executeAsync(boundStatement)
                 .thenAccept(rs -> {});
     }
 
     @Override
-    public CompletionStage<Item> get(long cartId, long itemId) {
+    public CompletionStage<Item> get(long cartId, String itemId) {
         BoundStatement boundStatement = getItemStatement.boundStatementBuilder()
                 .setLong("cartId", cartId)
-                .setLong("itemId", itemId)
+                .setString("itemId", itemId)
                 .build();
         return session.executeAsync(boundStatement)
                 .thenApply(rs -> {
@@ -96,51 +100,47 @@ public class CassandraCartRepository implements CartRepository {
     }
 
     @Override
-    public CompletionStage<Void> delete(long cartId) {
+    public CompletionStage<Boolean> delete(long cartId) {
         BoundStatement boundStatement = deleteCartStatement.boundStatementBuilder()
                 .setLong("cartId", cartId)
                 .build();
-        LOGGER.info("Prepared cart delete [cartId={}]", cartId);
+        LOGGER.info("Prepared a cart delete [cartId={}].", cartId);
         return session.executeAsync(boundStatement)
-                .thenAccept(rs -> {});
+                .thenApply(AsyncResultSet::wasApplied);
     }
 
     @Override
-    public CompletionStage<Void> delete(long cartId, long itemId) {
+    public CompletionStage<Boolean> delete(long cartId, String itemId) {
         BoundStatement boundStatement = deleteItemStatement.boundStatementBuilder()
                 .setLong("cartId", cartId)
-                .setLong("itemId", itemId)
+                .setString("itemId", itemId)
                 .build();
-        LOGGER.info("Prepared item delete [cartId={}, itemId={}]", cartId, itemId);
+        LOGGER.info("Prepared item delete [cartId={}, itemId={}].", cartId, itemId);
         return session.executeAsync(boundStatement)
-                .thenAccept(rs -> {});
+                .thenApply(AsyncResultSet::wasApplied);
     }
 
     @Override
-    public CompletionStage<Item> update(long cartId, long itemId, int numberDifference) {
+    public CompletionStage<Boolean> update(long cartId, String itemId, int numberDifference) {
         BoundStatement boundStatement = updateItemStatement.boundStatementBuilder()
                 .setLong("cartId", cartId)
-                .setLong("itemId", itemId)
+                .setString("itemId", itemId)
                 .setInt("diff", numberDifference)
                 .build();
-        LOGGER.info("Prepared item update [cartId={}, itemId={}]", cartId, itemId);
+        LOGGER.info("Prepared item update [cartId={}, itemId={}].", cartId, itemId);
         return session.executeAsync(boundStatement)
-                .thenApply(rs -> {
-                    Row row = rs.one();
-                    if (row != null) {
-                        return new Item(itemId, row.getInt("number"));
-                    } else {
-                        return null;
-                    }
-                });
+                .thenApply(AsyncResultSet::wasApplied);
     }
 
     CompletionStage<List<Item>> composePages(AsyncResultSet resultSet, List<Item> accumulator) {
-        synchronize = synchronize + 1; // Update accumulator from memory
+        synchronise = synchronise + 1; // Update accumulator from memory
+
         for (Row row : resultSet.currentPage()) {
-            accumulator.add(new Item(row.getLong("cartId"), row.getInt("number")));
+            accumulator.add(new Item(row.getString("cartId"), row.getInt("number")));
         }
-        synchronize = synchronize + 1; // Flush accumulator to memory
+
+        synchronise = synchronise + 1; // Flush accumulator to memory
+
         if (resultSet.hasMorePages()) {
             return resultSet.fetchNextPage().thenCompose(rs -> composePages(rs, accumulator));
         } else {

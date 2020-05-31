@@ -31,11 +31,14 @@ dependencies {
 
     implementation 'com.datastax.oss:java-driver-core:4.6.1'
 
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    testImplementation 'org.mockito:mockito-junit-jupiter:3.3.3'
+    testImplementation 'org.mockito:mockito-core:3.3.3'
 
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'

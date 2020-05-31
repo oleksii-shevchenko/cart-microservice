@@ -1,7 +1,7 @@
 @namespace("dev.flanker.cart.generated.avro")
 protocol Messaging {
   record OrderEntry {
-    long itemId;
+    string itemId;
     int number;
   }
 
