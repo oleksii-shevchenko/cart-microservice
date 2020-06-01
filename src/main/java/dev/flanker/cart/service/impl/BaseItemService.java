@@ -71,44 +71,12 @@ public class BaseItemService implements ItemService {
 
     @Override
     public CompletionStage<Item> increase(long userId, Item item) {
-        CompletableFuture<Binding> bindingFuture = bindingRepository.get(userId).toCompletableFuture();
-        return bindingFuture
-                .thenCompose(binding -> {
-                    if (binding != null) {
-                        return cartRepository.update(binding.getCartId(), item.getItemId(), item.getNumber());
-                    } else {
-                        LOGGER.warn("Cannot apply changes. Binding for user not found [userId={}].", userId);
-                        throw new NotFoundException();
-                    }
-                })
-                .thenCompose(updated -> {
-                    if (updated != null && updated) {
-                         return cartRepository.get(bindingFuture.join().getCartId(), item.getItemId());
-                    } else {
-                        throw new NotFoundException();
-                    }
-                });
+        return updateItemQuantity(userId, item.getItemId(), item.getNumber());
     }
 
     @Override
     public CompletionStage<Item> decrease(long userId, Item item) {
-        CompletableFuture<Binding> bindingFuture = bindingRepository.get(userId).toCompletableFuture();
-        return bindingFuture
-                .thenCompose(binding -> {
-                    if (binding != null) {
-                        return cartRepository.update(binding.getCartId(), item.getItemId(), -item.getNumber());
-                    } else {
-                        LOGGER.warn("Cannot apply changes. Binding for user not found [userId={}].", userId);
-                        throw new NotFoundException();
-                    }
-                })
-                .thenCompose(updated -> {
-                    if (updated != null && updated) {
-                        return cartRepository.get(bindingFuture.join().getCartId(), item.getItemId());
-                    } else {
-                        throw new NotFoundException();
-                    }
-                });
+        return updateItemQuantity(userId, item.getItemId(), -item.getNumber());
     }
 
     @Override
@@ -119,6 +87,36 @@ public class BaseItemService implements ItemService {
                         return cartRepository.delete(binding.getCartId(), itemId);
                     } else {
                         LOGGER.warn("Cannot delete. Binding for user not found [userId={}].", userId);
+                        throw new NotFoundException();
+                    }
+                });
+    }
+
+    CompletableFuture<Item> updateItemQuantity(long userId, String itemId, int diff) {
+        CompletableFuture<Binding> bindingFuture = bindingRepository.get(userId).toCompletableFuture();
+
+        CompletableFuture<Integer> differenceFuture = bindingFuture
+                .thenCompose(binding -> {
+                    if (binding != null) {
+                        return cartRepository.get(binding.getCartId(), itemId);
+                    } else {
+                        throw new NotFoundException();
+                    }
+                })
+                .thenApply(persisted -> {
+                    if (persisted != null && persisted.getNumber() + diff > 0) {
+                        return persisted.getNumber() + diff;
+                    } else {
+                        throw new NotFoundException();
+                    }
+                });
+
+        return differenceFuture
+                .thenCompose(number -> cartRepository.update(bindingFuture.join().getCartId(), new Item(itemId, number)))
+                .thenApply(updated -> {
+                    if (updated != null && updated) {
+                        return new Item(itemId, differenceFuture.join());
+                    } else {
                         throw new NotFoundException();
                     }
                 });

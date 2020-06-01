@@ -75,8 +75,8 @@ class CassandraCartRepositoryTest {
         cartRepository.put(cartId, item).toCompletableFuture().join();
 
         BoundStatementBuilder builder = builders.get(statement);
-        verify(builder).setLong("cartId", cartId);
-        verify(builder).setString("itemId", item.getItemId());
+        verify(builder).setLong("cart_id", cartId);
+        verify(builder).setString("item_id", item.getItemId());
         verify(builder).setInt("number", item.getNumber());
         verify(builder).build();
         verify(cqlSession).executeAsync(eq(boundStatements.get(statement)));
@@ -100,8 +100,8 @@ class CassandraCartRepositoryTest {
         }
 
         BoundStatementBuilder builder = builders.get(statement);
-        verify(builder).setLong("cartId", cartId);
-        verify(builder).setString("itemId", item.getItemId());
+        verify(builder).setLong("cart_id", cartId);
+        verify(builder).setString("item_id", item.getItemId());
         verify(builder).setInt("number", item.getNumber());
         verify(builder).build();
         verify(cqlSession).executeAsync(eq(boundStatements.get(statement)));
@@ -127,8 +127,8 @@ class CassandraCartRepositoryTest {
         assertEquals(expected, actual);
 
         BoundStatementBuilder builder = builders.get(statement);
-        verify(builder).setLong("cartId", cartId);
-        verify(builder).setString("itemId", expected.getItemId());
+        verify(builder).setLong("cart_id", cartId);
+        verify(builder).setString("item_id", expected.getItemId());
         verify(builder).build();
         verify(cqlSession).executeAsync(eq(boundStatements.get(statement)));
         verify(preparedStatements.get(statement)).boundStatementBuilder();
@@ -154,8 +154,8 @@ class CassandraCartRepositoryTest {
         assertNull(actual);
 
         BoundStatementBuilder builder = builders.get(statement);
-        verify(builder).setLong("cartId", cartId);
-        verify(builder).setString("itemId", expected.getItemId());
+        verify(builder).setLong("cart_id", cartId);
+        verify(builder).setString("item_id", expected.getItemId());
         verify(builder).build();
         verify(cqlSession).executeAsync(eq(boundStatements.get(statement)));
         verify(preparedStatements.get(statement)).boundStatementBuilder();
@@ -180,8 +180,8 @@ class CassandraCartRepositoryTest {
         }
 
         BoundStatementBuilder builder = builders.get(statement);
-        verify(builder).setLong("cartId", cartId);
-        verify(builder).setString("itemId", expected.getItemId());
+        verify(builder).setLong("cart_id", cartId);
+        verify(builder).setString("item_id", expected.getItemId());
         verify(builder).build();
         verify(cqlSession).executeAsync(eq(boundStatements.get(statement)));
         verify(preparedStatements.get(statement)).boundStatementBuilder();
@@ -203,7 +203,7 @@ class CassandraCartRepositoryTest {
         assertTrue(deleted);
 
         BoundStatementBuilder builder = builders.get(statement);
-        verify(builder).setLong("cartId", cartId);
+        verify(builder).setLong("cart_id", cartId);
         verify(builder).build();
         verify(cqlSession).executeAsync(eq(boundStatements.get(statement)));
         verify(preparedStatements.get(statement)).boundStatementBuilder();
@@ -227,7 +227,7 @@ class CassandraCartRepositoryTest {
         }
 
         BoundStatementBuilder builder = builders.get(statement);
-        verify(builder).setLong("cartId", cartId);
+        verify(builder).setLong("cart_id", cartId);
         verify(builder).build();
         verify(cqlSession).executeAsync(eq(boundStatements.get(statement)));
         verify(preparedStatements.get(statement)).boundStatementBuilder();
@@ -250,8 +250,8 @@ class CassandraCartRepositoryTest {
         assertTrue(deleted);
 
         BoundStatementBuilder builder = builders.get(statement);
-        verify(builder).setLong("cartId", cartId);
-        verify(builder).setString("itemId", itemId);
+        verify(builder).setLong("cart_id", cartId);
+        verify(builder).setString("item_id", itemId);
         verify(builder).build();
         verify(cqlSession).executeAsync(eq(boundStatements.get(statement)));
         verify(preparedStatements.get(statement)).boundStatementBuilder();
@@ -276,8 +276,8 @@ class CassandraCartRepositoryTest {
         }
 
         BoundStatementBuilder builder = builders.get(statement);
-        verify(builder).setLong("cartId", cartId);
-        verify(builder).setString("itemId", itemId);
+        verify(builder).setLong("cart_id", cartId);
+        verify(builder).setString("item_id", itemId);
         verify(builder).build();
         verify(cqlSession).executeAsync(eq(boundStatements.get(statement)));
         verify(preparedStatements.get(statement)).boundStatementBuilder();
@@ -289,21 +289,22 @@ class CassandraCartRepositoryTest {
 
         long cartId = 880;
         String itemId = "12345";
-        int diff = 5;
+        int number = 5;
+        Item item = new Item(itemId, number);
 
         AsyncResultSet resultSet = mock(AsyncResultSet.class);
 
         when(resultSet.wasApplied()).thenReturn(true);
         when(cqlSession.executeAsync(boundStatements.get(statement))).thenReturn(completedFuture(resultSet));
 
-        Boolean deleted = cartRepository.update(cartId, itemId, diff).toCompletableFuture().join();
+        Boolean deleted = cartRepository.update(cartId, item).toCompletableFuture().join();
 
         assertTrue(deleted);
 
         BoundStatementBuilder builder = builders.get(statement);
-        verify(builder).setLong("cartId", cartId);
-        verify(builder).setString("itemId", itemId);
-        verify(builder).setInt("diff", diff);
+        verify(builder).setLong("cart_id", cartId);
+        verify(builder).setString("item_id", itemId);
+        verify(builder).setInt("number", number);
         verify(builder).build();
         verify(cqlSession).executeAsync(eq(boundStatements.get(statement)));
         verify(preparedStatements.get(statement)).boundStatementBuilder();
@@ -318,20 +319,21 @@ class CassandraCartRepositoryTest {
 
         long cartId = 880;
         String itemId = "21345";
-        int diff = 5;
+        int number = 5;
+        Item item = new Item(itemId, number);
 
         when(cqlSession.executeAsync(boundStatements.get(statement))).thenReturn(failedFuture(new RuntimeException()));
 
         try {
-            cartRepository.update(cartId, itemId, diff).toCompletableFuture().join();
+            cartRepository.update(cartId, item).toCompletableFuture().join();
         } catch (Exception e) {
             // Expected exception
         }
 
         BoundStatementBuilder builder = builders.get(statement);
-        verify(builder).setLong("cartId", cartId);
-        verify(builder).setString("itemId", itemId);
-        verify(builder).setInt("diff", diff);
+        verify(builder).setLong("cart_id", cartId);
+        verify(builder).setString("item_id", itemId);
+        verify(builder).setInt("number", number);
         verify(builder).build();
         verify(cqlSession).executeAsync(eq(boundStatements.get(statement)));
         verify(preparedStatements.get(statement)).boundStatementBuilder();
@@ -383,7 +385,7 @@ class CassandraCartRepositoryTest {
         assertEquals(expected, actual);
 
         BoundStatementBuilder builder = builders.get(statement);
-        verify(builder).setLong("cartId", cartId);
+        verify(builder).setLong("cart_id", cartId);
         verify(builder).build();
         verify(cqlSession).executeAsync(eq(boundStatements.get(statement)));
         verify(preparedStatements.get(statement)).boundStatementBuilder();
@@ -391,9 +393,11 @@ class CassandraCartRepositoryTest {
         verify(firstResultSet).hasMorePages();
         verify(firstResultSet).fetchNextPage();
         verify(firstResultSet).currentPage();
+        verify(firstResultSet).remaining();
 
         verify(secondResultSet).currentPage();
         verify(secondResultSet).hasMorePages();
+        verify(secondResultSet).remaining();
 
         verifyNoMoreInteractions(firstResultSet, secondResultSet);
     }
@@ -413,7 +417,7 @@ class CassandraCartRepositoryTest {
         }
 
         BoundStatementBuilder builder = builders.get(statement);
-        verify(builder).setLong("cartId", cartId);
+        verify(builder).setLong("cart_id", cartId);
         verify(builder).build();
         verify(cqlSession).executeAsync(eq(boundStatements.get(statement)));
         verify(preparedStatements.get(statement)).boundStatementBuilder();
@@ -421,7 +425,7 @@ class CassandraCartRepositoryTest {
 
     private static Row mockItem(Item item) {
         Row row = mock(Row.class);
-        when(row.getString("cartId")).thenReturn(item.getItemId());
+        when(row.getString("item_id")).thenReturn(item.getItemId());
         when(row.getInt("number")).thenReturn(item.getNumber());
         return row;
     }

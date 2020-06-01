@@ -67,8 +67,8 @@ class CassandraBindingRepositoryTest {
         bindingRepository.put(binding).toCompletableFuture().join();
 
         BoundStatementBuilder builder = builders.get(statement);
-        verify(builder).setLong("userId", binding.getUserId());
-        verify(builder).setLong("cartId", binding.getCartId());
+        verify(builder).setLong("user_id", binding.getUserId());
+        verify(builder).setLong("cart_id", binding.getCartId());
         verify(builder).build();
         verify(cqlSession).executeAsync(eq(boundStatements.get(statement)));
         verify(preparedStatements.get(statement)).boundStatementBuilder();
@@ -89,8 +89,8 @@ class CassandraBindingRepositoryTest {
         }
 
         BoundStatementBuilder builder = builders.get(statement);
-        verify(builder).setLong("userId", binding.getUserId());
-        verify(builder).setLong("cartId", binding.getCartId());
+        verify(builder).setLong("user_id", binding.getUserId());
+        verify(builder).setLong("cart_id", binding.getCartId());
         verify(builder).build();
         verify(cqlSession).executeAsync(eq(boundStatements.get(statement)));
         verify(preparedStatements.get(statement)).boundStatementBuilder();
@@ -105,7 +105,7 @@ class CassandraBindingRepositoryTest {
         Row row = mock(Row.class);
 
         when(resultSet.one()).thenReturn(row);
-        when(row.getLong("cartId")).thenReturn(expected.getCartId());
+        when(row.getLong("cart_id")).thenReturn(expected.getCartId());
 
         when(cqlSession.executeAsync(boundStatements.get(statement))).thenReturn(completedFuture(resultSet));
 
@@ -115,12 +115,12 @@ class CassandraBindingRepositoryTest {
         assertEquals(actual.getUserId(), expected.getUserId());
 
         BoundStatementBuilder builder = builders.get(statement);
-        verify(builder).setLong("userId", expected.getUserId());
+        verify(builder).setLong("user_id", expected.getUserId());
         verify(builder).build();
         verify(cqlSession).executeAsync(eq(boundStatements.get(statement)));
         verify(preparedStatements.get(statement)).boundStatementBuilder();
         verify(resultSet).one();
-        verify(row).getLong("cartId");
+        verify(row).getLong("cart_id");
 
         verifyNoMoreInteractions(resultSet, row);
     }
@@ -141,7 +141,7 @@ class CassandraBindingRepositoryTest {
         assertNull(actual);
 
         BoundStatementBuilder builder = builders.get(statement);
-        verify(builder).setLong("userId", expected.getUserId());
+        verify(builder).setLong("user_id", expected.getUserId());
         verify(builder).build();
         verify(cqlSession).executeAsync(eq(boundStatements.get(statement)));
         verify(preparedStatements.get(statement)).boundStatementBuilder();
@@ -165,7 +165,7 @@ class CassandraBindingRepositoryTest {
         }
 
         BoundStatementBuilder builder = builders.get(statement);
-        verify(builder).setLong("userId", expected.getUserId());
+        verify(builder).setLong("user_id", expected.getUserId());
         verify(builder).build();
         verify(cqlSession).executeAsync(eq(boundStatements.get(statement)));
         verify(preparedStatements.get(statement)).boundStatementBuilder();
@@ -186,7 +186,7 @@ class CassandraBindingRepositoryTest {
         assertTrue(deleted);
 
         BoundStatementBuilder builder = builders.get(statement);
-        verify(builder).setLong("userId", expected.getUserId());
+        verify(builder).setLong("user_id", expected.getUserId());
         verify(builder).build();
         verify(cqlSession).executeAsync(eq(boundStatements.get(statement)));
         verify(preparedStatements.get(statement)).boundStatementBuilder();
@@ -210,7 +210,7 @@ class CassandraBindingRepositoryTest {
         }
 
         BoundStatementBuilder builder = builders.get(statement);
-        verify(builder).setLong("userId", expected.getUserId());
+        verify(builder).setLong("user_id", expected.getUserId());
         verify(builder).build();
         verify(cqlSession).executeAsync(eq(boundStatements.get(statement)));
         verify(preparedStatements.get(statement)).boundStatementBuilder();

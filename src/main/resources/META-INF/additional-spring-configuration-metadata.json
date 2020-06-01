@@ -1,0 +1,23 @@
+{
+  "properties" : [
+    {
+      "name" : "cassandra.seed.port",
+      "type" : "java.lang.String",
+      "description" : "Cassandra port."
+    },
+    {
+      "name" : "cassandra.keyspace",
+      "type" : "java.lang.String",
+      "description" : "Keyspace for cql session."
+    },
+    {
+      "name" : "cassandra.seed.host",
+      "type" : "java.lang.String",
+      "description" : "Host to discover cassandra cluster."
+    },
+    {
+      "name" : "cassandra.password",
+      "type" : "java.lang.String",
+      "description" : "Cassandra password."
+    }
+  ] }

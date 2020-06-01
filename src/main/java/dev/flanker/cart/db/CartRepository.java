@@ -59,11 +59,9 @@ public interface CartRepository {
      * Updated item in a cart.
      *
      * @param cartId Targeted cart.
-     * @param itemId Targeted item.
-     * @param numberDifference Items difference. This argument
-     * may be both positive and negative number.
+     * @param item New item version.
      * @return Returns completion stage of boolean, that
      * contains indicates that item was updated.
      */
-    CompletionStage<Boolean> update(long cartId, String itemId, int numberDifference);
+    CompletionStage<Boolean> update(long cartId, Item item);
 }

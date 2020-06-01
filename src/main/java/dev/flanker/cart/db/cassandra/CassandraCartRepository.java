@@ -21,18 +21,17 @@ import java.util.concurrent.CompletionStage;
 public class CassandraCartRepository implements CartRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(CassandraCartRepository.class);
 
-    static final String PUT_ITEM_CQL = "INSERT INTO cart (cartId, itemId, number) VALUES (:cartId, :itemId, :number)";
+    static final String PUT_ITEM_CQL = "INSERT INTO cart (cart_id, item_id, number) VALUES (:cart_id, :item_id, :number)";
 
-    static final String GET_ITEM_CQL = "SELECT number FROM cart WHERE cartId = :cartId AND itemId = :itemId";
+    static final String GET_ITEM_CQL = "SELECT number FROM cart WHERE cart_id = :cart_id AND item_id = :item_id";
 
-    static final String GET_CART_CQL = "SELECT itemId, number FROM cart WHERE cartId = :cartId";
+    static final String GET_CART_CQL = "SELECT item_id, number FROM cart WHERE cart_id = :cart_id";
 
-    static final String DELETE_CART_CQL = "DELETE FROM cart WHERE cartId = :cartId";
+    static final String DELETE_CART_CQL = "DELETE FROM cart WHERE cart_id = :cart_id";
 
-    static final String DELETE_ITEM_CQL = "DELETE FROM cart WHERE cartId = :cartId AND itemId = :itemId";
+    static final String DELETE_ITEM_CQL = "DELETE FROM cart WHERE cart_id = :cart_id AND item_id = :item_id";
 
-    static final String UPDATE_ITEM_CQL =
-            "UPDATE cart SET number = number + :diff WHERE cartId = :cartId AND itemId = :itemId IF number + :diff > 0";
+    static final String UPDATE_ITEM_CQL = "UPDATE cart SET number = :number WHERE cart_id = :cart_id AND item_id = :item_id";
 
     private final PreparedStatement putItemStatement;
 
@@ -64,8 +63,8 @@ public class CassandraCartRepository implements CartRepository {
     @Override
     public CompletionStage<Void> put(long cartId, Item item) {
         BoundStatement boundStatement = putItemStatement.boundStatementBuilder()
-                .setLong("cartId", cartId)
-                .setString("itemId", item.getItemId())
+                .setLong("cart_id", cartId)
+                .setString("item_id", item.getItemId())
                 .setInt("number", item.getNumber())
                 .build();
         LOGGER.info("Prepared item insert [cartId={}, itemId={}].", cartId, item.getItemId());
@@ -76,8 +75,8 @@ public class CassandraCartRepository implements CartRepository {
     @Override
     public CompletionStage<Item> get(long cartId, String itemId) {
         BoundStatement boundStatement = getItemStatement.boundStatementBuilder()
-                .setLong("cartId", cartId)
-                .setString("itemId", itemId)
+                .setLong("cart_id", cartId)
+                .setString("item_id", itemId)
                 .build();
         return session.executeAsync(boundStatement)
                 .thenApply(rs -> {
@@ -93,8 +92,9 @@ public class CassandraCartRepository implements CartRepository {
     @Override
     public CompletionStage<List<Item>> get(long cartId) {
         BoundStatement boundStatement = getCartStatement.boundStatementBuilder()
-                .setLong("cartId", cartId)
+                .setLong("cart_id", cartId)
                 .build();
+        LOGGER.info("Prepared cart get [cartId={}]", cartId);
         return session.executeAsync(boundStatement)
                 .thenCompose(rs -> composePages(rs, new ArrayList<>()));
     }
@@ -102,7 +102,7 @@ public class CassandraCartRepository implements CartRepository {
     @Override
     public CompletionStage<Boolean> delete(long cartId) {
         BoundStatement boundStatement = deleteCartStatement.boundStatementBuilder()
-                .setLong("cartId", cartId)
+                .setLong("cart_id", cartId)
                 .build();
         LOGGER.info("Prepared a cart delete [cartId={}].", cartId);
         return session.executeAsync(boundStatement)
@@ -112,8 +112,8 @@ public class CassandraCartRepository implements CartRepository {
     @Override
     public CompletionStage<Boolean> delete(long cartId, String itemId) {
         BoundStatement boundStatement = deleteItemStatement.boundStatementBuilder()
-                .setLong("cartId", cartId)
-                .setString("itemId", itemId)
+                .setLong("cart_id", cartId)
+                .setString("item_id", itemId)
                 .build();
         LOGGER.info("Prepared item delete [cartId={}, itemId={}].", cartId, itemId);
         return session.executeAsync(boundStatement)
@@ -121,22 +121,23 @@ public class CassandraCartRepository implements CartRepository {
     }
 
     @Override
-    public CompletionStage<Boolean> update(long cartId, String itemId, int numberDifference) {
+    public CompletionStage<Boolean> update(long cartId, Item item) {
         BoundStatement boundStatement = updateItemStatement.boundStatementBuilder()
-                .setLong("cartId", cartId)
-                .setString("itemId", itemId)
-                .setInt("diff", numberDifference)
+                .setLong("cart_id", cartId)
+                .setString("item_id", item.getItemId())
+                .setInt("number", item.getNumber())
                 .build();
-        LOGGER.info("Prepared item update [cartId={}, itemId={}].", cartId, itemId);
+        LOGGER.info("Prepared item update [cartId={}, itemId={}].", cartId, item.getItemId());
         return session.executeAsync(boundStatement)
                 .thenApply(AsyncResultSet::wasApplied);
     }
 
-    CompletionStage<List<Item>> composePages(AsyncResultSet resultSet, List<Item> accumulator) {
+    private CompletionStage<List<Item>> composePages(AsyncResultSet resultSet, List<Item> accumulator) {
         synchronise = synchronise + 1; // Update accumulator from memory
 
+        LOGGER.info("Start parsing page [size={}]", resultSet.remaining());
         for (Row row : resultSet.currentPage()) {
-            accumulator.add(new Item(row.getString("cartId"), row.getInt("number")));
+            accumulator.add(new Item(row.getString("item_id"), row.getInt("number")));
         }
 
         synchronise = synchronise + 1; // Flush accumulator to memory
@@ -144,6 +145,7 @@ public class CassandraCartRepository implements CartRepository {
         if (resultSet.hasMorePages()) {
             return resultSet.fetchNextPage().thenCompose(rs -> composePages(rs, accumulator));
         } else {
+            LOGGER.info("Finished parsing cart [size={}]", accumulator.size());
             return CompletableFuture.completedFuture(accumulator);
         }
 

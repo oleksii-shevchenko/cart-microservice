@@ -18,11 +18,11 @@ import java.util.concurrent.CompletionStage;
 public class CassandraBindingRepository implements BindingRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(CassandraBindingRepository.class);
 
-    static final String PUT_BINDING_CQL = "INSERT INTO user_binding (user_id, cart_id) VALUES (:userId, :cartId)";
+    static final String PUT_BINDING_CQL = "INSERT INTO user_binding (user_id, cart_id) VALUES (:user_id, :cart_id)";
 
-    static final String GET_BINDING_CQL = "SELECT cart_id FROM user_binding WHERE userId = :userId";
+    static final String GET_BINDING_CQL = "SELECT cart_id FROM user_binding WHERE user_id = :user_id";
 
-    static final String DELETE_BINDING_CQL = "DELETE FROM user_binding WHERE userId = :userId";
+    static final String DELETE_BINDING_CQL = "DELETE FROM user_binding WHERE user_id = :user_id";
 
     private final PreparedStatement putBindingStatement;
 
@@ -43,8 +43,8 @@ public class CassandraBindingRepository implements BindingRepository {
     @Override
     public CompletionStage<Void> put(Binding binding) {
         BoundStatement boundStatement = putBindingStatement.boundStatementBuilder()
-                .setLong("userId", binding.getUserId())
-                .setLong("cartId", binding.getCartId())
+                .setLong("user_id", binding.getUserId())
+                .setLong("cart_id", binding.getCartId())
                 .build();
         LOGGER.info("Prepared binding insert [userId={}, cartId={}].", binding.getUserId(), binding.getCartId());
         return session.executeAsync(boundStatement)
@@ -54,13 +54,13 @@ public class CassandraBindingRepository implements BindingRepository {
     @Override
     public CompletionStage<Binding> get(long userId) {
         BoundStatement boundStatement = getBindingStatement.boundStatementBuilder()
-                .setLong("userId", userId)
+                .setLong("user_id", userId)
                 .build();
         return session.executeAsync(boundStatement)
                 .thenApply(rs -> {
                     Row row = rs.one();
                     if (row != null) {
-                        return new Binding(userId, row.getLong("cartId"));
+                        return new Binding(userId, row.getLong("cart_id"));
                     } else {
                         return null;
                     }
@@ -70,7 +70,7 @@ public class CassandraBindingRepository implements BindingRepository {
     @Override
     public CompletionStage<Boolean> delete(long userId) {
         BoundStatement boundStatement = deleteBindingStatement.boundStatementBuilder()
-                .setLong("userId", userId)
+                .setLong("user_id", userId)
                 .build();
         LOGGER.info("Prepared binding delete [userId={}].", userId);
         return session.executeAsync(boundStatement)

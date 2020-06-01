@@ -119,34 +119,34 @@ class BaseItemServiceTest {
     public void updatedIncreaseTest() {
         long userId = 1234888321L;
         Binding binding = new Binding(userId, 456);
-        Item patch = new Item("1234", 1);
-        Item updated = new Item("1234", 5);
+        String itemId = "123234";
+        Item patch = new Item(itemId, 1);
+        Item updated = new Item(itemId, 5);
 
         when(bindingRepository.get(userId)).thenReturn(CompletableFuture.completedFuture(binding));
-        when(cartRepository.update(binding.getCartId(), patch.getItemId(), patch.getNumber()))
-                .thenReturn(CompletableFuture.completedFuture(true));
-        when(cartRepository.get(binding.getCartId(), patch.getItemId()))
-                .thenReturn(CompletableFuture.completedFuture(updated));
+        when(cartRepository.get(binding.getCartId(), itemId)).thenReturn(CompletableFuture.completedFuture(new Item(itemId, 4)));
+        when(cartRepository.update(binding.getCartId(), updated)).thenReturn(CompletableFuture.completedFuture(true));
 
-        Item actual = itemService.increase(userId, patch).toCompletableFuture().join();
+        Item actual = itemService.updateItemQuantity(userId, patch.getItemId(), patch.getNumber()).toCompletableFuture().join();
 
         assertEquals(updated, actual);
 
         verify(bindingRepository).get(userId);
-        verify(cartRepository).update(binding.getCartId(), patch.getItemId(), patch.getNumber());
-        verify(cartRepository).get(binding.getCartId(), patch.getItemId());
+        verify(cartRepository).get(binding.getCartId(), itemId);
+        verify(cartRepository).update(binding.getCartId(), updated);
     }
 
     @Test
     public void notUpdatedIncreaseTest() {
         long userId = 1234888321L;
         Binding binding = new Binding(userId, 456);
-        Item patch = new Item("1234", 1);
-        Item updated = new Item("1234", 5);
+        String itemId = "1234";
+        Item patch = new Item(itemId, 1);
+        Item updated = new Item(itemId, 5);
 
         when(bindingRepository.get(userId)).thenReturn(CompletableFuture.completedFuture(binding));
-        when(cartRepository.update(binding.getCartId(), patch.getItemId(), patch.getNumber()))
-                .thenReturn(CompletableFuture.completedFuture(false));
+        when(cartRepository.get(binding.getCartId(), itemId)).thenReturn(CompletableFuture.completedFuture(new Item(itemId, 4)));
+        when(cartRepository.update(binding.getCartId(), updated)).thenReturn(CompletableFuture.completedFuture(false));
 
         try {
             itemService.increase(userId, patch).toCompletableFuture().join();
@@ -157,68 +157,8 @@ class BaseItemServiceTest {
 
 
         verify(bindingRepository).get(userId);
-        verify(cartRepository).update(binding.getCartId(), patch.getItemId(), patch.getNumber());
-    }
-
-    @Test
-    public void bindingAbsentDecreaseTest() {
-        long userId = 1234888321L;
-
-        when(bindingRepository.get(userId)).thenReturn(CompletableFuture.completedFuture(null));
-
-        try {
-            itemService.increase(userId, new Item("1234", 1)).toCompletableFuture().join();
-            fail();
-        } catch (Exception e) {
-            // Expected
-        }
-
-        verify(bindingRepository).get(userId);
-    }
-
-    @Test
-    public void updatedDecreaseTest() {
-        long userId = 1234888321L;
-        Binding binding = new Binding(userId, 456);
-        Item patch = new Item("1234", 1);
-        Item updated = new Item("1234", 5);
-
-        when(bindingRepository.get(userId)).thenReturn(CompletableFuture.completedFuture(binding));
-        when(cartRepository.update(binding.getCartId(), patch.getItemId(), -patch.getNumber()))
-                .thenReturn(CompletableFuture.completedFuture(true));
-        when(cartRepository.get(binding.getCartId(), patch.getItemId()))
-                .thenReturn(CompletableFuture.completedFuture(updated));
-
-        Item actual = itemService.decrease(userId, patch).toCompletableFuture().join();
-
-        assertEquals(updated, actual);
-
-        verify(bindingRepository).get(userId);
-        verify(cartRepository).update(binding.getCartId(), patch.getItemId(), -patch.getNumber());
-        verify(cartRepository).get(binding.getCartId(), patch.getItemId());
-    }
-
-    @Test
-    public void notUpdatedDecreaseTest() {
-        long userId = 1234888321L;
-        Binding binding = new Binding(userId, 456);
-        Item patch = new Item("1234", 1);
-        Item updated = new Item("1234", 5);
-
-        when(bindingRepository.get(userId)).thenReturn(CompletableFuture.completedFuture(binding));
-        when(cartRepository.update(binding.getCartId(), patch.getItemId(), -patch.getNumber()))
-                .thenReturn(CompletableFuture.completedFuture(false));
-
-        try {
-            itemService.decrease(userId, patch).toCompletableFuture().join();
-            fail();
-        } catch (Exception e) {
-            // Expected
-        }
-
-
-        verify(bindingRepository).get(userId);
-        verify(cartRepository).update(binding.getCartId(), patch.getItemId(), -patch.getNumber());
+        verify(cartRepository).get(binding.getCartId(), itemId);
+        verify(cartRepository).update(binding.getCartId(), updated);
     }
 
     @Test
