@@ -3,6 +3,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'java'
     id 'org.betterplugin.avro' version '0.19.2-SNAPSHOT'
+    id 'com.palantir.docker'  version '0.25.0'
 }
 
 group = 'dev.flanker'
@@ -86,4 +87,22 @@ def generateAvro = tasks.register("generateAvro", org.betterplugin.avro.Generate
 
 tasks.named("compileJava").configure {
     source(generateAvro)
+}
+
+bootJar {
+    baseName = 'cart-microservice'
+    version =  '0.1.0'
+}
+
+
+task unpack(type: Copy) {
+    dependsOn bootJar
+    from(zipTree(tasks.bootJar.outputs.files.singleFile))
+    into("build/dependency")
+}
+
+docker {
+    name "${project.group}/${bootJar.baseName}"
+    copySpec.from(tasks.unpack.outputs).into("dependency")
+    buildArgs(['DEPENDENCY': "dependency"])
 }
