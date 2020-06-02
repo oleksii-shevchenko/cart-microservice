@@ -1,11 +1,10 @@
 package dev.flanker.cart.util;
 
-import com.google.api.core.ApiFuture;
-import com.spotify.futures.ApiFuturesExtra;
-import com.spotify.futures.CompletableFuturesExtra;
-
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+
+import com.google.api.core.ApiFuture;
+import com.spotify.futures.CompletableFuturesExtra;
 
 public final class AsyncUtil {
     private AsyncUtil() { }

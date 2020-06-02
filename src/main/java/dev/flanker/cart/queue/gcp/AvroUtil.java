@@ -1,12 +1,12 @@
 package dev.flanker.cart.queue.gcp;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import dev.flanker.cart.domain.Cart;
 import dev.flanker.cart.domain.Item;
 import dev.flanker.cart.generated.avro.Order;
 import dev.flanker.cart.generated.avro.OrderEntry;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 final class AvroUtil {
     private AvroUtil() {}

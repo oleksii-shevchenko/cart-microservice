@@ -1,9 +1,10 @@
 package dev.flanker.cart.domain;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 public class Cart {
     @Min(1)

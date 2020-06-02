@@ -1,21 +1,23 @@
 package dev.flanker.cart.queue.gcp;
 
-import com.google.api.core.ApiFuture;
-import com.google.cloud.pubsub.v1.PublisherInterface;
-import com.google.protobuf.UnsafeByteOperations;
-import com.google.pubsub.v1.PubsubMessage;
-import com.spotify.futures.ApiFuturesExtra;
-import dev.flanker.cart.domain.Cart;
-import dev.flanker.cart.queue.OrderQueue;
+import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ForkJoinPool;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ForkJoinPool;
+import com.google.api.core.ApiFuture;
+import com.google.cloud.pubsub.v1.PublisherInterface;
+import com.google.protobuf.UnsafeByteOperations;
+import com.google.pubsub.v1.PubsubMessage;
+import com.spotify.futures.ApiFuturesExtra;
+
+import dev.flanker.cart.domain.Cart;
+import dev.flanker.cart.queue.OrderQueue;
 
 @Component
 public class PubsubOrderQueue implements OrderQueue {

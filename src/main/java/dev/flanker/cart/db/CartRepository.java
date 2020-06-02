@@ -1,9 +1,9 @@
 package dev.flanker.cart.db;
 
-import dev.flanker.cart.domain.Item;
-
 import java.util.List;
 import java.util.concurrent.CompletionStage;
+
+import dev.flanker.cart.domain.Item;
 
 public interface CartRepository {
     /**

@@ -1,8 +1,8 @@
 package dev.flanker.cart.queue;
 
-import dev.flanker.cart.domain.Cart;
-
 import java.util.concurrent.CompletionStage;
+
+import dev.flanker.cart.domain.Cart;
 
 public interface OrderQueue {
     /**

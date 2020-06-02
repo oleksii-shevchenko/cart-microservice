@@ -1,11 +1,11 @@
 package dev.flanker.cart.ctx;
 
+import java.util.Random;
+import java.util.function.Supplier;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
-
-import java.util.Random;
-import java.util.function.Supplier;
 
 @Configuration
 public class ServiceConfiguration {

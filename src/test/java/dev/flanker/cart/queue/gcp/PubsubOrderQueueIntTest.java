@@ -51,7 +51,7 @@ class PubsubOrderQueueIntTest {
         assertTrue(cart.getItems().contains(toItem(order.getEntries().get(1))));
     }
 
-    private Item toItem(OrderEntry entry) {
+    private static Item toItem(OrderEntry entry) {
         return new Item(entry.getItemId(), entry.getNumber());
     }
 }

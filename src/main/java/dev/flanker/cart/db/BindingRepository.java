@@ -1,8 +1,8 @@
 package dev.flanker.cart.db;
 
-import dev.flanker.cart.domain.Binding;
-
 import java.util.concurrent.CompletionStage;
+
+import dev.flanker.cart.domain.Binding;
 
 public interface BindingRepository {
     /**

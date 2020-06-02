@@ -1,15 +1,16 @@
 package dev.flanker.cart.queue.gcp;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+
 import dev.flanker.cart.domain.Cart;
 import dev.flanker.cart.domain.Item;
 import dev.flanker.cart.generated.avro.Order;
 import dev.flanker.cart.generated.avro.OrderEntry;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class AvroUtilTest {
     @Test

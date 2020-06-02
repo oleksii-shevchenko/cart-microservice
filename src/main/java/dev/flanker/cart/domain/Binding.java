@@ -1,7 +1,8 @@
 package dev.flanker.cart.domain;
 
-import javax.validation.constraints.Min;
 import java.util.Objects;
+
+import javax.validation.constraints.Min;
 
 public class Binding {
     @Min(1)

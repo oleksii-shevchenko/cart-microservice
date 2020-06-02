@@ -1,5 +1,14 @@
 package dev.flanker.cart.service.impl;
 
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import dev.flanker.cart.db.BindingRepository;
 import dev.flanker.cart.db.CartRepository;
 import dev.flanker.cart.domain.Binding;
@@ -7,14 +16,6 @@ import dev.flanker.cart.domain.Cart;
 import dev.flanker.cart.domain.Item;
 import dev.flanker.cart.queue.OrderQueue;
 import dev.flanker.cart.service.OrderService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
 
 @Component
 public class BaseOrderService implements OrderService {

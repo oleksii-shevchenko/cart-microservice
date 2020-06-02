@@ -1,9 +1,11 @@
 package dev.flanker.cart.rest;
 
-import dev.flanker.cart.domain.Cart;
-import dev.flanker.cart.domain.Item;
-import dev.flanker.cart.service.CartService;
-import dev.flanker.cart.service.OrderService;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -13,11 +15,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import dev.flanker.cart.domain.Cart;
+import dev.flanker.cart.domain.Item;
+import dev.flanker.cart.service.CartService;
+import dev.flanker.cart.service.OrderService;
 
 @WebFluxTest(CartFluxController.class)
 class CartFluxControllerTest {

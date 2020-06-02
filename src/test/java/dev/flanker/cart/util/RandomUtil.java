@@ -21,7 +21,7 @@ public class RandomUtil {
     }
 
     public static String itemId() {
-        return new BigInteger(12, ThreadLocalRandom.current()).toString(16);
+        return new BigInteger(12 * Byte.SIZE, ThreadLocalRandom.current()).toString(16);
     }
 
     public static int number() {

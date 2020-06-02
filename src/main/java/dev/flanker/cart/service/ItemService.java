@@ -1,8 +1,8 @@
 package dev.flanker.cart.service;
 
-import dev.flanker.cart.domain.Item;
-
 import java.util.concurrent.CompletionStage;
+
+import dev.flanker.cart.domain.Item;
 
 public interface ItemService {
     /**

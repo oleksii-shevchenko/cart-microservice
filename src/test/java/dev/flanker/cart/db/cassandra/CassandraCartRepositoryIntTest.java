@@ -1,14 +1,13 @@
 package dev.flanker.cart.db.cassandra;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.junit.jupiter.api.Test;
@@ -65,5 +64,4 @@ class CassandraCartRepositoryIntTest {
         cartRepository.delete(cartId).toCompletableFuture().join();
         assertTrue(cartRepository.get(cartId).toCompletableFuture().join().isEmpty());
     }
-
 }

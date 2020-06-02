@@ -1,9 +1,16 @@
 package dev.flanker.cart.queue.gcp;
 
-import com.google.cloud.pubsub.v1.PublisherInterface;
-import dev.flanker.cart.domain.Cart;
-import dev.flanker.cart.domain.Item;
-import dev.flanker.cart.util.AsyncUtil;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import static dev.flanker.cart.util.AsyncUtil.isCompletedExceptionally;
+
+import java.util.List;
+import java.util.concurrent.CompletionStage;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,15 +19,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
-import java.util.concurrent.CompletionStage;
+import com.google.cloud.pubsub.v1.PublisherInterface;
 
-import static dev.flanker.cart.util.AsyncUtil.isCompletedExceptionally;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import dev.flanker.cart.domain.Cart;
+import dev.flanker.cart.domain.Item;
+import dev.flanker.cart.util.AsyncUtil;
 
 @ExtendWith(MockitoExtension.class)
 class PubsubOrderQueueTest {

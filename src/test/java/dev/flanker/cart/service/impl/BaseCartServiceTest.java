@@ -1,10 +1,18 @@
 package dev.flanker.cart.service.impl;
 
-import dev.flanker.cart.db.BindingRepository;
-import dev.flanker.cart.db.CartRepository;
-import dev.flanker.cart.domain.Binding;
-import dev.flanker.cart.domain.Cart;
-import dev.flanker.cart.domain.Item;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,11 +20,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import dev.flanker.cart.db.BindingRepository;
+import dev.flanker.cart.db.CartRepository;
+import dev.flanker.cart.domain.Binding;
+import dev.flanker.cart.domain.Cart;
+import dev.flanker.cart.domain.Item;
 
 @ExtendWith(MockitoExtension.class)
 class BaseCartServiceTest {
