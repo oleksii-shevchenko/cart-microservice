@@ -8,9 +8,7 @@ import java.util.HashSet;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
 
 import com.google.pubsub.v1.ReceivedMessage;
 
@@ -26,6 +24,7 @@ import dev.flanker.cart.domain.Item;
 import dev.flanker.cart.generated.avro.Order;
 import dev.flanker.cart.generated.avro.OrderEntry;
 import dev.flanker.cart.queue.gcp.PubsubOrderQueue;
+import dev.flanker.cart.util.OrderUtil;
 import dev.flanker.cart.util.RandomUtil;
 
 @SpringBootTest(classes = {
@@ -36,8 +35,6 @@ import dev.flanker.cart.util.RandomUtil;
         PubsubConsumerConfiguration.class,
         PubsubOrderQueue.class,
         BaseOrderService.class })
-@TestPropertySource(locations = "classpath:application.properties")
-@EnableConfigurationProperties
 class BaseOrderServiceIntTest {
     @Autowired
     private CassandraCartRepository cartRepository;
@@ -74,7 +71,7 @@ class BaseOrderServiceIntTest {
         assertEquals(binding.getCartId(), order.getCartId());
         assertEquals(cart.getItems().size(), order.getEntries().size());
         for (OrderEntry entry : order.getEntries()) {
-            assertTrue(cart.getItems().contains(toItem(entry)));
+            assertTrue(cart.getItems().contains(OrderUtil.toItem(entry)));
         }
         assertNull(bindingRepository.get(binding.getUserId()).toCompletableFuture().join());
         assertTrue(cartRepository.get(binding.getCartId()).toCompletableFuture().join().isEmpty());
@@ -97,9 +94,5 @@ class BaseOrderServiceIntTest {
             // Cart cannot be empty
         }
         bindingRepository.delete(binding.getUserId()).toCompletableFuture().join();
-    }
-
-    private static Item toItem(OrderEntry entry) {
-        return new Item(entry.getItemId(), entry.getNumber());
     }
 }

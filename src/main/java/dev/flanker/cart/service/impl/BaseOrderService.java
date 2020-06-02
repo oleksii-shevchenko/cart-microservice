@@ -14,6 +14,8 @@ import dev.flanker.cart.db.CartRepository;
 import dev.flanker.cart.domain.Binding;
 import dev.flanker.cart.domain.Cart;
 import dev.flanker.cart.domain.Item;
+import dev.flanker.cart.exception.EmptyCartException;
+import dev.flanker.cart.exception.NotFoundException;
 import dev.flanker.cart.queue.OrderQueue;
 import dev.flanker.cart.service.OrderService;
 
@@ -45,7 +47,7 @@ public class BaseOrderService implements OrderService {
                         return cartRepository.get(binding.getCartId());
                     } else {
                         LOGGER.error("No binding. Failed to create order [userId={}]", userId);
-                        throw new IllegalStateException("No active user-cart binding");
+                        throw new NotFoundException();
                     }
                 })
                 .thenCombine(bindingFuture, OrderDto::of);
@@ -78,7 +80,7 @@ public class BaseOrderService implements OrderService {
 
         static OrderDto of(List<Item> items, Binding binding) {
             if (items.isEmpty()) {
-                throw new IllegalStateException("Cart cannot be empty");
+                throw new EmptyCartException();
             }
             return new OrderDto(binding.getCartId(), new Cart(binding.getUserId(), items));
         }

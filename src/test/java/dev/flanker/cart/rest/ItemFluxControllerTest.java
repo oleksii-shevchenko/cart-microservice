@@ -55,7 +55,7 @@ class ItemFluxControllerTest {
         String itemId = "1234";
         long uuid = 63465465369L;
 
-        when(itemService.get(uuid, itemId)).thenReturn(CompletableFuture.failedFuture(new NotFoundException()));
+        when(itemService.get(uuid, itemId)).thenReturn(CompletableFuture.completedFuture(null));
 
         webTestClient.get()
                 .uri("/api/v1/cart/{userId}/{itemId}", uuid, itemId)

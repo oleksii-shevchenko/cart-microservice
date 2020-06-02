@@ -8,16 +8,12 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
 
 import dev.flanker.cart.ctx.CassandraConfiguration;
 import dev.flanker.cart.domain.Binding;
 
 @SpringBootTest(classes = { CassandraConfiguration.class, CassandraBindingRepository.class })
-@TestPropertySource(locations = "classpath:application.properties")
-@EnableConfigurationProperties
 class CassandraBindingRepositoryIntTest {
     @Autowired
     private CassandraBindingRepository bindingRepository;

@@ -13,7 +13,7 @@ public class PubsubConfiguration {
     @Value("${gcp.project}")
     private String projectName;
 
-    @Value("${gpc.pubsub.topic}")
+    @Value("${gcp.pubsub.topic}")
     private String topicName;
 
     @Bean

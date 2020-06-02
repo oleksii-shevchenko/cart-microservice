@@ -1,6 +1,5 @@
 package dev.flanker.cart.ctx;
 
-import java.net.InetSocketAddress;
 import java.nio.file.Path;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -8,26 +7,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.datastax.oss.driver.api.core.CqlSession;
-import com.datastax.oss.driver.api.core.config.DriverConfigLoader;
 
 @Configuration
 public class CassandraConfiguration {
-    @Value("${cassandra.seed.host}")
-    private String seed;
-
-    @Value("${cassandra.seed.port:9042}")
-    private int port;
+    @Value("${cassandra.credentials}")
+    private String credentials;
 
     @Value("${cassandra.keyspace}")
     private String keyspace;
 
-    @Value("${cassandra.dc:us-east1}")
-    private String localDataCenter;
-
-    @Value("${cassandra.configuration.path:./devops/cassandra/driver/cassandra.conf}")
-    private String configurationFile;
-
-    @Value("${cassandra.user:cassandra}")
+    @Value("${cassandra.user:cart_service}")
     private String cassandraUser;
 
     @Value("${cassandra.password}")
@@ -36,10 +25,8 @@ public class CassandraConfiguration {
     @Bean
     public CqlSession session() {
         return CqlSession.builder()
-                .withConfigLoader(DriverConfigLoader.fromPath(Path.of(configurationFile)))
                 .withAuthCredentials(cassandraUser, cassandraPassword)
-                .addContactPoint(InetSocketAddress.createUnresolved(seed, port))
-                .withLocalDatacenter(localDataCenter)
+                .withCloudSecureConnectBundle(Path.of(credentials))
                 .withKeyspace(keyspace)
                 .build();
     }

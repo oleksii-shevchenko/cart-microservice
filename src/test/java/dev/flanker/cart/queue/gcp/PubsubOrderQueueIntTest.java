@@ -14,9 +14,8 @@ import dev.flanker.cart.component.SimpleConsumer;
 import dev.flanker.cart.ctx.PubsubConfiguration;
 import dev.flanker.cart.ctx.PubsubConsumerConfiguration;
 import dev.flanker.cart.domain.Cart;
-import dev.flanker.cart.domain.Item;
 import dev.flanker.cart.generated.avro.Order;
-import dev.flanker.cart.generated.avro.OrderEntry;
+import dev.flanker.cart.util.OrderUtil;
 import dev.flanker.cart.util.RandomUtil;
 
 @SpringBootTest(classes = {
@@ -47,11 +46,7 @@ class PubsubOrderQueueIntTest {
         assertEquals(cart.getUserId(), order.getUserId());
         assertEquals(cartId, order.getCartId());
         assertEquals(cart.getItems().size(), order.getEntries().size());
-        assertTrue(cart.getItems().contains(toItem(order.getEntries().get(0))));
-        assertTrue(cart.getItems().contains(toItem(order.getEntries().get(1))));
-    }
-
-    private static Item toItem(OrderEntry entry) {
-        return new Item(entry.getItemId(), entry.getNumber());
+        assertTrue(cart.getItems().contains(OrderUtil.toItem(order.getEntries().get(0))));
+        assertTrue(cart.getItems().contains(OrderUtil.toItem(order.getEntries().get(1))));
     }
 }

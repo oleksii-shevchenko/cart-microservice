@@ -12,19 +12,15 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
 
 import dev.flanker.cart.ctx.CassandraConfiguration;
 import dev.flanker.cart.domain.Item;
 
 
 @SpringBootTest(classes = { CassandraConfiguration.class, CassandraCartRepository.class })
-@TestPropertySource(locations = "classpath:application.properties")
-@EnableConfigurationProperties
 class CassandraCartRepositoryIntTest {
-    private static int LARGE_PAGE_SIZE = 250;
+    private static int LARGE_PAGE_SIZE = 50;
 
     @Autowired
     private CassandraCartRepository cartRepository;

@@ -15,7 +15,7 @@ public class PubsubConsumerConfiguration {
     @Value("${gcp.project}")
     private String projectName;
 
-    @Value("${gpc.pubsub.subscription}")
+    @Value("${gcp.pubsub.subscription}")
     private String subscriptionName;
 
     @Bean

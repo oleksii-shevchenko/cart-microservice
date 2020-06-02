@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import dev.flanker.cart.domain.Item;
+import dev.flanker.cart.exception.NotFoundException;
 import dev.flanker.cart.rest.domain.UpdateRequest;
 import dev.flanker.cart.service.ItemService;
 import reactor.core.publisher.Mono;
@@ -37,7 +38,20 @@ public class ItemFluxController {
     @GetMapping("/api/v1/cart/{userId}/{itemId}")
     public Mono<? extends Item> getItem(@PathVariable long userId,
                                         @PathVariable String itemId) {
-        return Mono.fromCompletionStage(() -> itemService.get(userId, itemId));
+        CompletionStage<Item> itemOrNotFound = itemService.get(userId, itemId)
+                .handle((item, thr) -> {
+                    if (thr != null) {
+                        throw new RuntimeException(thr);
+                    } else {
+                        if (item != null) {
+                            return item;
+                        } else {
+                            throw new NotFoundException();
+                        }
+                    }
+                });
+
+        return Mono.fromCompletionStage(itemOrNotFound);
     }
 
     @ResponseBody

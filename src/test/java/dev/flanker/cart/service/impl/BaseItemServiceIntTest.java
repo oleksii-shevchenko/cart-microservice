@@ -5,9 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
 
 import dev.flanker.cart.ctx.CassandraConfiguration;
 import dev.flanker.cart.ctx.ServiceConfiguration;
@@ -23,8 +21,6 @@ import dev.flanker.cart.util.RandomUtil;
         CassandraBindingRepository.class,
         BaseItemService.class,
         ServiceConfiguration.class })
-@TestPropertySource(locations = "classpath:application.properties")
-@EnableConfigurationProperties
 class BaseItemServiceIntTest {
     @Autowired
     private CassandraBindingRepository bindingRepository;

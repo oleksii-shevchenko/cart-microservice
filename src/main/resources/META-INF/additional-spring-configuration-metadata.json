@@ -34,5 +34,10 @@
       "name" : "gcp.pubsub.topic",
       "type" : "java.lang.String",
       "description" : "Orders GCP Pub/Sub topic."
+    },
+    {
+      "name" : "cassandra.credentials",
+      "type" : "java.lang.String",
+      "description" : "Credentials for DataStax Astra."
     }
   ] }
