@@ -15,8 +15,6 @@ public class PubsubConfiguration {
     @Value("${gpc.pubsub.topic}")
     private String topicName;
 
-    // TODO Docker export: need credentials in GOOGLE_APPLICATION_CREDENTIALS
-
     @Bean
     public PublisherInterface publisher() throws Exception {
         return Publisher.newBuilder(TopicName.of(projectName, topicName)).build();

@@ -19,5 +19,20 @@
       "name" : "cassandra.password",
       "type" : "java.lang.String",
       "description" : "Cassandra password."
+    },
+    {
+      "name" : "cassandra.dc",
+      "type" : "java.lang.String",
+      "description" : "Local cassandra data center."
+    },
+    {
+      "name" : "gcp.project",
+      "type" : "java.lang.String",
+      "description" : "Google Cloud Platform project."
+    },
+    {
+      "name" : "gcp.pubsub.topic",
+      "type" : "java.lang.String",
+      "description" : "Orders GCP Pub/Sub topic."
     }
   ] }

@@ -23,8 +23,6 @@ public class CassandraConfiguration {
     @Value("${cassandra.dc:us-east1}")
     private String localDataCenter;
 
-    // The properties below need to be resolved throwout environmental variables
-
     @Value("${cassandra.configuration.path:./devops/cassandra/driver/cassandra.conf}")
     private String configurationFile;
 
