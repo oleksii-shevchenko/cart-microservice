@@ -4,37 +4,12 @@ info:
   version: v0
 servers:
 - url: "http://localhost:8080"
-  description: Cart Microservice for Book Application
+  description: Local environment url
 paths:
-  /api/v1/cart/{userId}/{itemId}:
-    get:
-      tags:
-      - cart-controller
-      operationId: getItem
-      parameters:
-      - name: userId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-      - name: itemId
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: int64
-      responses:
-        "200":
-          description: OK
-          content:
-            '*/*':
-              schema:
-                $ref: "#/components/schemas/Item"
   /api/v1/cart/{userId}:
     get:
       tags:
-      - cart-controller
+      - cart-flux-controller
       operationId: getCart
       parameters:
       - name: userId
@@ -52,7 +27,7 @@ paths:
                 $ref: "#/components/schemas/Cart"
     post:
       tags:
-      - cart-controller
+      - cart-flux-controller
       operationId: commitCart
       parameters:
       - name: userId
@@ -70,7 +45,7 @@ paths:
                 $ref: "#/components/schemas/Cart"
     delete:
       tags:
-      - cart-controller
+      - cart-flux-controller
       operationId: deleteCart
       parameters:
       - name: userId
@@ -85,12 +60,12 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/Cart"
-  /api/v1/cart/{userId}/item:
-    post:
+                $ref: "#/components/schemas/Boolean"
+  /api/v1/cart/{userId}/{itemId}:
+    get:
       tags:
-      - cart-controller
-      operationId: addItem
+      - item-flux-controller
+      operationId: getItem
       parameters:
       - name: userId
         in: path
@@ -98,11 +73,69 @@ paths:
         schema:
           type: integer
           format: int64
+      - name: itemId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Item"
+    put:
+      tags:
+      - item-flux-controller
+      operationId: putItem
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: itemId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: number
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 1
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Void"
+    post:
+      tags:
+      - item-flux-controller
+      operationId: updateItem
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: itemId
+        in: path
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Item"
+              $ref: "#/components/schemas/UpdateRequest"
         required: true
       responses:
         "200":
@@ -113,7 +146,7 @@ paths:
                 $ref: "#/components/schemas/Item"
     delete:
       tags:
-      - cart-controller
+      - item-flux-controller
       operationId: deleteItem
       parameters:
       - name: userId
@@ -122,19 +155,18 @@ paths:
         schema:
           type: integer
           format: int64
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Item"
+      - name: itemId
+        in: path
         required: true
+        schema:
+          type: string
       responses:
         "200":
           description: OK
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/Item"
+                $ref: "#/components/schemas/Boolean"
 components:
   schemas:
     Item:
@@ -161,3 +193,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Item"
+    Void:
+      type: object
+    Boolean:
+      type: boolean

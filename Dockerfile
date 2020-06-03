@@ -1,11 +1,17 @@
-FROM openjdk:8-jdk-alpine
+FROM openjdk:11-jdk-slim
 
-RUN addgroup -S spring && adduser -S spring -G spring
+VOLUME /tmp
 
-USER spring:spring
+ARG PASS
+ARG PROJECT
 
-COPY ${DEPENDENCY}/BOOT-INF/lib /app/lib
-COPY ${DEPENDENCY}/META-INF /app/META-INF
-COPY ${DEPENDENCY}/BOOT-INF/classes /app
+COPY build/libs/*.jar cart-microservice.jar
+COPY google.json google-credentials.json
+COPY cassandra.zip cassandra-credentials.zip
 
-ENTRYPOINT ["java","-cp","app:app/lib/*","dev.flanker.cart.CartMicroserviceApplication"]
+ENV GCP_PROJECT=${PROJECT}
+ENV CASSANDRA_CREDENTIALS='/cassandra-credentials.zip'
+ENV GOOGLE_APPLICATION_CREDENTIALS='/google-credentials.json'
+ENV CASSANDRA_PASSWORD=${PASS}
+
+ENTRYPOINT ["java","-jar","/cart-microservice.jar"]

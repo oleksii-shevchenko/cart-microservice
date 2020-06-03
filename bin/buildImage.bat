@@ -1,0 +1,1 @@
+docker build -t dev.flanker/cart-microservice --build-arg PROJECT=%GCP_PROJECT% --build-arg PASS=%CASSANDRA_PASSWORD% .
